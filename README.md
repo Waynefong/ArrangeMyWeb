@@ -197,7 +197,8 @@ Created symlink /etc/systemd/system/multi-user.target.wants/supervisord.service 
 
     # 这里我把nginx放到supervisor里自启的时候一并启动
     [program:nginx-0]
-    command=nginx
+    # 因为nginx是后台运行的，我们想要supervisor能控制它，就需要将它设置为前台运行
+    command=nginx -g 'daemon off;'
     startsecs=1
     autostart=true
     autorestart=true
@@ -211,7 +212,11 @@ Created symlink /etc/systemd/system/multi-user.target.wants/supervisord.service 
     [program:tornado-0]
     command=sh -x /home/tornado_start.sh
     directory=tornado项目文件夹路径
-    startsecs=1
+    startretries=3
+    # 开始等待时间
+    startsecs=0
+    # 停止等待时间
+    stopwaitsecs=0
     autostart=true
     autorestart=true
     redirect_stderr=true
@@ -419,3 +424,7 @@ rsync --delete-before -d /tmp/empty/ 目标文件夹地址
 原理是将一个空文件夹替换掉目标文件夹的内容
 
 ## OK，BYE ～
+
+---
+
+## 欢迎来到.[www.waynefung.com](http://www.waynefung.com)
